@@ -15,6 +15,8 @@ from sklearn.preprocessing import LabelEncoder
 
 from sklearn.model_selection import train_test_split
 
+
+
 # Reading dataset
 dataset = pd.read_csv('dataset.csv')  # Reading downloaded training csv fife from the program directory
 initial_dataset = dataset.copy()  # 혹시몰라서
