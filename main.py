@@ -522,7 +522,6 @@ test_img_scaled = robust_scaler.transform(X_test)
 # plt.show()
 
 # Decision tree evaluation
-# Decision Tree의 과적합을 줄이기 위한 파라미터 튜닝
 from sklearn.tree import DecisionTreeClassifier
 from sklearn import tree
 from sklearn.model_selection import GridSearchCV
@@ -535,17 +534,18 @@ params = {
 DecisionTree = DecisionTreeClassifier(random_state=156)
 grid_cv = GridSearchCV(DecisionTree,param_grid=params,scoring ='accuracy',cv=5,verbose=1)
 grid_cv.fit(X_train_scaled, y_train)
-print('Decision tree 최고 평균 정확도 수치: {:.4f}'.format(grid_cv.best_score_))
-print('Decision tree 최적 하이퍼파라미터: ', grid_cv.best_params_)
+print('Decision tree best score: {:.4f}'.format(grid_cv.best_score_))
+print('Decision tree best parameter: ', grid_cv.best_params_)
 # 최적의 파라미터값을 만든 모델
 best_df_clf = grid_cv.best_estimator_
 pred_dt = best_df_clf.predict(X_test_scaled)
 #decision tree 예측결과
-print("Decision tree 최적 예측 결과")
-print(pred_dt)
+submission = pd.DataFrame(data=pred_dt,columns=["IsBadBuy"])
+print("Decision tree best estimator prediction:")
+print(submission)
+
 accuracy = accuracy_score(y_test, pred_dt)
-print('Decision Tree 예측 정확도: {0:.4f}'.format(accuracy))
-print("\n")
+print('Decision Tree best estimator accuracy: {0:.4f}'.format(accuracy))
 #feature의 중요도 plt로 나타내기
 import seaborn as sns
 feature_importance_values = best_df_clf.feature_importances_
@@ -556,7 +556,6 @@ feature_top20 = feature_importances.sort_values(ascending=False)[:20]
 feature_top1 = feature_top20.index[0]
 feature_top2 = feature_top20.index[1]
 print("feature top1: {0}, feature top2: {1}\n".format(feature_top1,feature_top2))
-print(feature_top20.index)
 plt.figure(figsize=[8, 6])
 plt.title('Feature Importances Top 20')
 sns.barplot(x=feature_top20, y=feature_top20.index)
@@ -565,21 +564,61 @@ plt.show()
 
 
 
-# KNN algorithm - evaluation
+# KNN algorithm evaluation
 from sklearn.neighbors import KNeighborsClassifier
 param_grid = {'n_neighbors':[1,2,3,4,5]}
 estimator = KNeighborsClassifier()
 grid = GridSearchCV(estimator, param_grid=param_grid)
 
 grid.fit(X_train_scaled, y_train)
-print("K-nearest neighbors 최고 평균 정확도 수치: {0:.4f}".format(grid.best_score_))
-print("최적 K:")
+print("K-nearest neighbors best score: {0:.4f}".format(grid.best_score_))
+print("best hyperparameter:")
 print(grid.best_params_)
 # KNN 최적의 모델
 best_df_knn = grid.best_estimator_
 # 최적 모델 예측결과
 pred_knn = best_df_knn.predict(X_test_scaled)
-print("최적 KNN 예측 결과:")
-print(pred_knn)
+submission = pd.DataFrame(data=pred_knn,columns=["IsBadBuy"])
+print("best KNN predict:")
+print(submission)
+
 accuracy = accuracy_score(y_test, pred_knn)
-print('k-nearest neighbor 예측 정확도: {0:.4f}'.format(accuracy))
+print('k-nearest neighbor accuracy: {0:.4f}'.format(accuracy))
+print("\n")
+
+
+
+# ensemble learning - Random Forest
+from sklearn.ensemble import RandomForestClassifier
+# instantiate model with 1000 decision trees
+rf = RandomForestClassifier()
+rf_param_grid = {
+    'n_estimators': [100,200],
+    'max_depth': [6,8,10,12],
+    'min_samples_leaf':[3,5,7,10],
+    'min_samples_split':[2,3,5,10]
+}
+rf_grid = GridSearchCV(rf,param_grid=rf_param_grid,scoring='accuracy',n_jobs=-1,verbose = 1)
+rf_grid.fit(X_train_scaled,y_train)
+print('Random forest best score: {:.4f}'.format(rf_grid.best_score_))
+print('Random forest best parameter: ', rf_grid.best_params_)
+# 최적의 파라미터값을 만든 모델
+best_rf_clf = rf_grid.best_estimator_
+pred_rf = best_rf_clf.predict(X_test_scaled)
+# Random Forest 예측결과
+print("Random Forest best estimator prediction")
+submission = pd.DataFrame(data=pred_rf,columns=["IsBadBuy"])
+print(submission)
+
+accuracy = accuracy_score(y_test, pred_rf)
+print('Random Forest accuracy: {0:.4f}'.format(accuracy))
+print("\n")
+"""
+ # random forest 출력 결과
+Fitting 5 folds for each of 128 candidates, totalling 640 fits
+Random forest 최고 평균 정확도 수치: 0.8984
+random forest 최적 하이퍼파라미터:  {'max_depth': 12, 'min_samples_leaf': 3, 'min_samples_split': 2, 'n_estimators': 200}
+Decision tree 최적 예측 결과
+[0 0 0 ... 0 0 0]
+Decision Tree 예측 정확도: 0.9022
+"""
