@@ -18,6 +18,8 @@ from sklearn.model_selection import train_test_split
 
 
 # Reading dataset
+
+
 dataset = pd.read_csv('training.csv')  # Reading downloaded training csv fife from the program directory
 initial_dataset = dataset.copy()  # 혹시몰라서
 
@@ -344,12 +346,30 @@ WarrantyCost            0
 dtype: int64
 '''
 
+
+
+
+import opensource
+
+newDatset = dataset
+
+os = opensource.EasyCombination(newDatset)
+
+#===================================================================================================================#
+
+os.encodeAndSplit()
+
+
+
 # Convert Categorical Value to Integer Value through Encoding
 # Label encoding usging a label encoder
+
 # label_encoder = LabelEncoder()
 # for i in dataset.columns[dataset.dtypes==object]:
 #     print(i)
 #     dataset[i]=label_encoder.fit_transform(list(dataset[i]))
+
+
 
 # One-Hot encoding using 'get_dummies' function
 print(dataset["Trim"].value_counts())
@@ -367,6 +387,11 @@ Z24        1
 Out        1
 Name: Trim, Length: 135, dtype: int64
 '''
+
+
+#===================================================================================================================#
+
+
 
 print(dataset["Model"].value_counts())
 '''
@@ -428,6 +453,12 @@ memory usage: 15.1 MB
 None
 '''
 
+
+
+
+
+
+
 # Splitting the dataset into Training and Test Set
 X = dataset.drop(['IsBadBuy'], axis=1)
 y = dataset['IsBadBuy']  # IsBadBuy is the target feature
@@ -436,6 +467,18 @@ y = dataset['IsBadBuy']  # IsBadBuy is the target feature
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=0)
 print(X_train.shape, y_train.shape)  # (51078, 123) (51078,)
 print(X_test.shape, y_test.shape)  # (21891, 123) (21891,)
+
+
+
+
+
+
+
+
+
+
+
+os.scale()
 
 # Feature scaling
 # If the data is not normalized, the pattern of change may not be detected
@@ -447,6 +490,7 @@ X_test_scaled = standard_scaler.transform(X_test)
 X_test_scaled = pd.DataFrame(X_test_scaled, columns=X_test.columns)  # Converts back to dataframe after scaling
 
 print(X_train_scaled)
+
 '''
         VehYear  VehicleAge    VehOdo    VNZIP1  VehBCost  IsOnlineSale  WarrantyCost  Auction_ADESA  ...   VNST_PA   VNST_SC   VNST_TN   VNST_TX  VNST_UT   VNST_VA   VNST_WA   VNST_WV
 0      0.381494   -0.106359  0.557592 -0.420274 -0.364077     -0.160324     -0.397782      -0.496553  ... -0.108841 -0.248156 -0.157279 -0.480628 -0.11139 -0.152373 -0.040344 -0.062855
@@ -520,6 +564,13 @@ test_img_scaled = robust_scaler.transform(X_test)
 # # Plot the heat map
 # g = sns.heatmap(dataset[top_corr_features].corr(), annot=True, cmap="rainbow")
 # plt.show()
+
+
+
+
+os.estimate()
+
+
 
 # Decision tree evaluation
 from sklearn.tree import DecisionTreeClassifier
