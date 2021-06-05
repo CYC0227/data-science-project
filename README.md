@@ -18,7 +18,7 @@ dataset: Dataset you will use
 
 |     Method       |      Description   | 
 | :--------------- | :----------------: | 
-| encodeAndSplit(self, target_name)           |  Parameters: self, target_name
+| encodeAndSplit(self, target_name)|Parameters: self, target_name
 
 You have to deliver target_name to estimate.
 
@@ -33,7 +33,7 @@ Examples:
 >>>import opensource
 >>>os = opensource.EasyCombination(newDatset)
 >>>os.encodeAndSplit('IsBadBuy')
-                  | 
+  | 
 | state            | :white_check_mark: | 
-| isAvailable      | :white_check_mark: |  :
+| isAvailable      | :white_check_mark: |  
 | isOn             | :white_check_mark: |
